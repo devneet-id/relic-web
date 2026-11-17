@@ -62,6 +62,7 @@ Specter::ether()::essence()::entity();
  *   src/index.css         becomes <style>
  *   src/index.js          becomes <script>
  *   src/index.php         runs on top, before the page
+ *   src/vessel/           the libraries, taken per folder
  * Crafter bundles them into one file: dist/index.php
  * Assets (images, fonts) live in dist/assets/
  */
@@ -79,20 +80,33 @@ Chanter::cast(
   echo: 'Bundle src/ into dist/index.php.',
   execute: function() {
     // describe the item: seeds are the recipe, shards are the sources
-    Crafter::item('website', function() {
+    Crafter::item('forged', function() {
       Crafter::seed('DIST', __DIR__ . '/dist/index.php');      // the output file
       Crafter::seed('TYPE', 'plain');                          // plain, function or class
       Crafter::seed('LANGUAGE', ['html', 'css', 'js', 'php']); // must match a template, in this order
 
+      // the page: one shard locks one file
       Crafter::shard(__DIR__ . '/src/index.head.html');
       Crafter::shard(__DIR__ . '/src/index.html');
       Crafter::shard(__DIR__ . '/src/index.css');
       Crafter::shard(__DIR__ . '/src/index.js');
       Crafter::shard(__DIR__ . '/src/index.php');
+
+      // the vessel: every library in src/vessel/, taken per folder
+      // a new file there joins the bundle, no need to list it here
+      Forger::scan(__DIR__ . '/src/vessel', function($file) {
+        // only the LANGUAGE files, images and folders stay out
+        if (is_file($file->target) && in_array($file->extension ?? '', ['html', 'css', 'js', 'php'])) {
+          Crafter::shard($file->target);
+        }
+        return $file;
+      });
     });
 
     // spark: many files become one
-    Crafter::spark('website');
+    Crafter::spark('forged');
+    // store the shards for later use
+    Chanter::cast('store')();
   }
 );
 
@@ -160,7 +174,7 @@ Chanter::cast(
   echo: 'Keep the assets as shards.',
   execute: function() {
     Keeper::shard([
-      'src',
+      'src',             // the page and its vessel
       'dist/assets',
       '.gitignore',
       'README.md',
