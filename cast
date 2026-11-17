@@ -85,14 +85,7 @@ Chanter::cast(
       Crafter::seed('TYPE', 'plain');                          // plain, function or class
       Crafter::seed('LANGUAGE', ['html', 'css', 'js', 'php']); // must match a template, in this order
 
-      // the page: one shard locks one file
-      Crafter::shard(__DIR__ . '/src/index.head.html');
-      Crafter::shard(__DIR__ . '/src/index.html');
-      Crafter::shard(__DIR__ . '/src/index.css');
-      Crafter::shard(__DIR__ . '/src/index.js');
-      Crafter::shard(__DIR__ . '/src/index.php');
-
-      // the vessel: every library in src/vessel/, taken per folder
+      // the vessel first: every library in src/vessel/, taken per folder
       // a new file there joins the bundle, no need to list it here
       Forger::scan(__DIR__ . '/src/vessel', function($file) {
         // only the LANGUAGE files, images and folders stay out
@@ -101,6 +94,13 @@ Chanter::cast(
         }
         return $file;
       });
+
+      // then the page: one shard locks one file
+      Crafter::shard(__DIR__ . '/src/index.head.html');
+      Crafter::shard(__DIR__ . '/src/index.html');
+      Crafter::shard(__DIR__ . '/src/index.css');
+      Crafter::shard(__DIR__ . '/src/index.js');
+      Crafter::shard(__DIR__ . '/src/index.php');
     });
 
     // spark: many files become one

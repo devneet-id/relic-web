@@ -95,7 +95,7 @@ src/
 ├── index.css         becomes <style>
 ├── index.js          becomes <script>
 ├── index.php         runs on top, before the page
-└── vessel/           every library lives here
+└── vessel/           every library lives here, bundled first
     └── README.md
 dist/
 ├── index.php         the bundle (php cast build)
@@ -106,7 +106,7 @@ dist/
 
 * Edit only `src/`. `dist/index.php` is made by `php cast build`.
 * Put images and fonts in `dist/assets/`. The page reads them as `assets/...`.
-* **The vessel** is `src/vessel/`, the home of every library. `php cast build` takes it per folder: drop `name.css`, `name.js`, `name.php` or `name.html` there, side by side, and they join the bundle, no need to list them in `cast`. Images and folders inside stay out.
+* **The vessel** is `src/vessel/`, the home of every library. `php cast build` takes it per folder, before the page: drop `name.css`, `name.js`, `name.php` or `name.html` there, side by side, and they join the bundle, no need to list them in `cast`. Images and folders inside stay out.
 * **The background** is `dist/assets/background.jpg`. Drop your own image there, no rebuild needed. Without it, the page falls back to a dark gradient.
 
 ---
